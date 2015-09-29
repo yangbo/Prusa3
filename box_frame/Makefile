@@ -15,10 +15,16 @@ MODELS_EXTRAS = $(wildcard extras/*.scad)
 STL_EXTRAS_1 = $(foreach src, $(MODELS_EXTRAS),output/$(src))
 STL_EXTRAS = $(STL_EXTRAS_1:%.scad=%.$(OUTPUT_TYPE))
 
+ifeq ($(strip $(shell uname)),Darwin)
+	OPENSCAD = /Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD
+else
+	OPENSCAD = openscad
+endif
+
 extras: $(STL_EXTRAS)
 
 output/%.$(OUTPUT_TYPE): %.scad $(INCLUDES) configuration.scad
-	openscad -o $@ $<
+	$(OPENSCAD) -o $@ $<
 
 clean:
 	rm output/*.$(OUTPUT_TYPE) output/*.gcode output/extras/*.stl output/extras/*.gcode
